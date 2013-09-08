@@ -582,18 +582,19 @@ int tcp_ioctl(struct sock *sk, int cmd, unsigned long arg)
 }
 EXPORT_SYMBOL(tcp_ioctl);
 
-static inline void tcp_mark_push(struct tcp_sock *tp, struct sk_buff *skb)
+void tcp_mark_push(struct tcp_sock *tp, struct sk_buff *skb)
 {
 	TCP_SKB_CB(skb)->tcp_flags |= TCPHDR_PSH;
 	tp->pushed_seq = tp->write_seq;
 }
+EXPORT_SYMBOL(tcp_mark_push);
 
 static inline bool forced_push(const struct tcp_sock *tp)
 {
 	return after(tp->write_seq, tp->pushed_seq + (tp->max_window >> 1));
 }
 
-static inline void skb_entail(struct sock *sk, struct sk_buff *skb)
+void skb_entail(struct sock *sk, struct sk_buff *skb)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_skb_cb *tcb = TCP_SKB_CB(skb);
@@ -609,6 +610,7 @@ static inline void skb_entail(struct sock *sk, struct sk_buff *skb)
 	if (tp->nonagle & TCP_NAGLE_PUSH)
 		tp->nonagle &= ~TCP_NAGLE_PUSH;
 }
+EXPORT_SYMBOL(skb_entail);
 
 static inline void tcp_mark_urg(struct tcp_sock *tp, int flags)
 {
@@ -616,8 +618,7 @@ static inline void tcp_mark_urg(struct tcp_sock *tp, int flags)
 		tp->snd_up = tp->write_seq;
 }
 
-static inline void tcp_push(struct sock *sk, int flags, int mss_now,
-			    int nonagle)
+void tcp_push(struct sock *sk, int flags, int mss_now, int nonagle)
 {
 	if (tcp_send_head(sk)) {
 		struct tcp_sock *tp = tcp_sk(sk);
@@ -630,6 +631,7 @@ static inline void tcp_push(struct sock *sk, int flags, int mss_now,
 					  (flags & MSG_MORE) ? TCP_NAGLE_CORK : nonagle);
 	}
 }
+EXPORT_SYMBOL(tcp_push);
 
 static int tcp_splice_data_recv(read_descriptor_t *rd_desc, struct sk_buff *skb,
 				unsigned int offset, size_t len)
@@ -814,7 +816,7 @@ static unsigned int tcp_xmit_size_goal(struct sock *sk, u32 mss_now,
 	return max(xmit_size_goal, mss_now);
 }
 
-static int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
+int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
 {
 	int mss_now;
 
@@ -823,6 +825,7 @@ static int tcp_send_mss(struct sock *sk, int *size_goal, int flags)
 
 	return mss_now;
 }
+EXPORT_SYMBOL(tcp_send_mss);
 
 static ssize_t do_tcp_sendpages(struct sock *sk, struct page *page, int offset,
 				size_t size, int flags)
@@ -1370,6 +1373,7 @@ void tcp_cleanup_rbuf(struct sock *sk, int copied)
 	if (time_to_ack)
 		tcp_send_ack(sk);
 }
+EXPORT_SYMBOL(tcp_cleanup_rbuf);
 
 static void tcp_prequeue_process(struct sock *sk)
 {

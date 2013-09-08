@@ -582,6 +582,10 @@ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
 
 /* tcp.c */
 extern void tcp_get_info(const struct sock *, struct tcp_info *);
+void tcp_push(struct sock *sk, int flags, int mss_now, int nonagle);
+int tcp_send_mss(struct sock *sk, int *size_goal, int flags);
+void skb_entail(struct sock *sk, struct sk_buff *skb);
+void tcp_mark_push(struct tcp_sock *tp, struct sk_buff *skb);
 
 /* Read 'sendfile()'-style from a TCP socket */
 typedef int (*sk_read_actor_t)(read_descriptor_t *, struct sk_buff *,
