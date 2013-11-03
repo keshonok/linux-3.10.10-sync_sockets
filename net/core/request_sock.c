@@ -223,3 +223,4 @@ out:
 	sock_put(lsk);
 	return;
 }
+EXPORT_SYMBOL(reqsk_fastopen_remove);

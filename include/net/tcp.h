@@ -582,10 +582,15 @@ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
 
 /* tcp.c */
 extern void tcp_get_info(const struct sock *, struct tcp_info *);
-void tcp_push(struct sock *sk, int flags, int mss_now, int nonagle);
-int tcp_send_mss(struct sock *sk, int *size_goal, int flags);
-void skb_entail(struct sock *sk, struct sk_buff *skb);
-void tcp_mark_push(struct tcp_sock *tp, struct sk_buff *skb);
+
+/* Routines required by Synchronous Sockets module. */
+extern void skb_entail(struct sock *sk, struct sk_buff *skb);
+extern void tcp_push(struct sock *sk, int flags, int mss_now, int nonagle);
+extern int tcp_send_mss(struct sock *sk, int *size_goal, int flags);
+extern void tcp_mark_push(struct tcp_sock *tp, struct sk_buff *skb);
+extern void tcp_init_nondata_skb(struct sk_buff *skb, u32 seq, u8 flags);
+extern void tcp_queue_skb(struct sock *sk, struct sk_buff *skb);
+extern int tcp_close_state(struct sock *sk);
 
 /* Read 'sendfile()'-style from a TCP socket */
 typedef int (*sk_read_actor_t)(read_descriptor_t *, struct sk_buff *,

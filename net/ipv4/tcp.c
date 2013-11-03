@@ -281,6 +281,7 @@
 #include <asm/ioctls.h>
 
 int sysctl_tcp_fin_timeout __read_mostly = TCP_FIN_TIMEOUT;
+EXPORT_SYMBOL_GPL(sysctl_tcp_fin_timeout);
 
 struct percpu_counter tcp_orphan_count;
 EXPORT_SYMBOL_GPL(tcp_orphan_count);
@@ -2004,7 +2005,7 @@ static const unsigned char new_state[16] = {
   /* TCP_CLOSING	*/ TCP_CLOSING,
 };
 
-static int tcp_close_state(struct sock *sk)
+int tcp_close_state(struct sock *sk)
 {
 	int next = (int)new_state[sk->sk_state];
 	int ns = next & TCP_STATE_MASK;
@@ -2013,6 +2014,7 @@ static int tcp_close_state(struct sock *sk)
 
 	return next & TCP_ACTION_FIN;
 }
+EXPORT_SYMBOL(tcp_close_state);
 
 /*
  *	Shutdown the sending side of a connection. Much like close except
@@ -2052,6 +2054,7 @@ bool tcp_check_oom(struct sock *sk, int shift)
 		net_info_ratelimited("out of memory -- consider tuning tcp_mem\n");
 	return too_many_orphans || out_of_socket_memory;
 }
+EXPORT_SYMBOL(tcp_check_oom);
 
 void tcp_close(struct sock *sk, long timeout)
 {
