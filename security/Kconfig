@@ -132,7 +132,7 @@ choice
 	default DEFAULT_SECURITY_TOMOYO if SECURITY_TOMOYO
 	default DEFAULT_SECURITY_APPARMOR if SECURITY_APPARMOR
 	default DEFAULT_SECURITY_YAMA if SECURITY_YAMA
-	default DEFAULT_SECURITY_DAC
+	default DEFAULT_SECURITY_TEMPESTA
 
 	help
 	  Select the security module that will be used by default if the
