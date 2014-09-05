@@ -1348,6 +1348,7 @@ unsigned long do_mmap_pgoff(struct file *file, unsigned long addr,
 		*populate = len;
 	return addr;
 }
+EXPORT_SYMBOL(do_mmap_pgoff);
 
 SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 		unsigned long, prot, unsigned long, flags,
