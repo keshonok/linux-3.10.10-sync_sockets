@@ -1,0 +1,9 @@
+config SECURITY_TEMPESTA
+	bool "Tempesta FW Support"
+	depends on SECURITY && NET && INET
+	select SECURITY_NETWORK
+	default y
+	help
+	  This selects Tempesta FW security module.
+	  Further information my be found at https://github.com/natsys/tempesta
+	  If you are unsure how to answer this question, answer N.
