@@ -443,7 +443,6 @@ int __mm_populate(unsigned long start, unsigned long len, int ignore_errors)
 		up_read(&mm->mmap_sem);
 	return ret;	/* 0 or negative error code */
 }
-EXPORT_SYMBOL(__mm_populate);
 
 SYSCALL_DEFINE2(mlock, unsigned long, start, size_t, len)
 {

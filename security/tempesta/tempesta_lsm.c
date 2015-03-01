@@ -19,8 +19,7 @@
  */
 #include <linux/security.h>
 #include <linux/spinlock.h>
-
-#include <linux/tempesta_fw.h>
+#include <linux/tempesta.h>
 
 static TempestaOps __rcu *tempesta_ops;
 static DEFINE_SPINLOCK(tops_lock);

@@ -74,6 +74,7 @@
 #include <linux/ptrace.h>
 #include <linux/blkdev.h>
 #include <linux/elevator.h>
+#include <linux/tempesta.h>
 
 #include <asm/io.h>
 #include <asm/bugs.h>
@@ -636,6 +637,14 @@ asmlinkage void __init start_kernel(void)
 	}
 
 	ftrace_init();
+
+	/*
+	 * Tempesta: reserve pages at so early stage to get continous
+	 * address space of physical pages.
+	 */
+#ifdef CONFIG_SECURITY_TEMPESTA
+	tempesta_reserve_pages();
+#endif
 
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();

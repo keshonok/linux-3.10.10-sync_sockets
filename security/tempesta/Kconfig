@@ -5,5 +5,5 @@ config SECURITY_TEMPESTA
 	default y
 	help
 	  This selects Tempesta FW security module.
-	  Further information my be found at https://github.com/natsys/tempesta
+	  Further information may be found at https://github.com/natsys/tempesta
 	  If you are unsure how to answer this question, answer N.

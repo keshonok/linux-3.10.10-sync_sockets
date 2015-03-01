@@ -2967,6 +2967,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	tdfx=		[HW,DRM]
 
+	tempesta_pages=	[KNL]
+			Order of pages reserved on each NUMA node for
+			Tempesta database. Must be multiple greater or equal
+			to 9 (one Tempesta DB extent size, 4KB * 2 ^ 9 = 2MB).
+
 	test_suspend=	[SUSPEND]
 			Specify "mem" (for Suspend-to-RAM) or "standby" (for
 			standby suspend) as the system sleep state to briefly
