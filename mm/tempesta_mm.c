@@ -44,7 +44,7 @@ void __init
 tempesta_reserve_pages(void)
 {
 	static struct page *pg_arr[PGCHUNKS];
-	struct page *p;
+	struct page *p = NULL;
 	int i, node, n, chunk_order;
 
 	chunk_order = min_t(int, MAX_ORDER - 1, pgorder);
@@ -79,14 +79,12 @@ tempesta_reserve_pages(void)
 			     1UL << chunk_order, page_address(p), node);
 
 			pg_arr[i] = p;
-			if (!map[node].addr) {
-				map[node].addr = (unsigned long)page_address(p);
-				map[node].pages = 1 << pgorder;
-			}
 		}
+		BUG_ON(map[node].addr);
+		map[node].addr = (unsigned long)page_address(p);
+		map[node].pages = 1 << pgorder;
 	}
 
-	BUG_ON(!pg_arr[0]);
 	return;
 err:
 	for (--node; node >= 0; --node)
