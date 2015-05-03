@@ -1946,6 +1946,7 @@ struct proto tcpv6_prot = {
 #endif
 	.clear_sk		= tcp_v6_clear_sk,
 };
+EXPORT_SYMBOL(tcpv6_prot);
 
 static const struct inet6_protocol tcpv6_protocol = {
 	.early_demux	=	tcp_v6_early_demux,
