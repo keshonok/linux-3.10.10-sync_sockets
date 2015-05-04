@@ -719,7 +719,9 @@ static void __copy_skb_header(struct sk_buff *new, const struct sk_buff *old)
 #ifdef CONFIG_XFRM
 	new->sp			= secpath_get(old->sp);
 #endif
-	memcpy(new->cb, old->cb, sizeof(old->cb));
+	memcpy(new->cb, old->cb, sizeof(old->cb) - sizeof(SsSkbCb));
+	TFW_SKB_CB(new)->next	= NULL;
+	TFW_SKB_CB(new)->prev	= NULL;
 	new->csum		= old->csum;
 	new->local_df		= old->local_df;
 	new->pkt_type		= old->pkt_type;
