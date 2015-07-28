@@ -238,6 +238,14 @@ enum {
 	 * all frags to avoid possible bad checksum
 	 */
 	SKBTX_SHARED_FRAG = 1 << 5,
+
+	/* The SKB has been transmitted, acknowledged, and then
+	 * freed by the kernel. The kernel considers the SKB gone,
+	 * and no longer knows about it. Yet, as the SKB is owned
+	 * by Tempesta, it is not actually freed. Instead, this
+	 * flag is set in __kfree_skb().
+	 */
+	SKBTX_TFW_KERNFREED = 1 << 6,
 };
 
 /*

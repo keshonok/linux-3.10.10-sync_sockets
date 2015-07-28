@@ -620,8 +620,11 @@ static void skb_release_all(struct sk_buff *skb)
 void __kfree_skb(struct sk_buff *skb)
 {
 	/* Don't free Tempesta owned socket buffers. */
-	if (unlikely(ss_skb_passed(skb)))
+	if (unlikely(ss_skb_passed(skb))) {
+		/* Mark the SKB as freed by the kernel. */
+		skb_shinfo(skb)->tx_flags |= SKBTX_TFW_KERNFREED;
 		return;
+	}
 
 	skb_release_all(skb);
 	kfree_skbmem(skb);
