@@ -1417,7 +1417,7 @@ static inline void sk_wmem_free_skb(struct sock *sk, struct sk_buff *skb)
 	sock_set_flag(sk, SOCK_QUEUE_SHRUNK);
 	sk->sk_wmem_queued -= skb->truesize;
 	sk_mem_uncharge(sk, skb->truesize);
-	__kfree_skb(skb);
+	kfree_skb_untraced(skb);
 }
 
 /* Used by processes to "lock" a socket state, so that

@@ -619,9 +619,8 @@ static void skb_release_all(struct sk_buff *skb)
 
 void __kfree_skb(struct sk_buff *skb)
 {
-	/* Don't free Tempesta owned socket buffers. */
-	if (unlikely(ss_skb_passed(skb)))
-		return;
+	/* Can't free buffers owned by Tempesta. */
+	BUG_ON((unlikely(ss_skb_passed(skb))));
 
 	skb_release_all(skb);
 	kfree_skbmem(skb);
@@ -699,6 +698,28 @@ void consume_skb(struct sk_buff *skb)
 	__kfree_skb(skb);
 }
 EXPORT_SYMBOL(consume_skb);
+
+/**
+ *	kfree_skb_untraced - free an skbuff
+ *	@skb: buffer to free
+ *
+ *	Drop a reference to the buffer and free it if the usage count has
+ *	hit zero. Functions identically to kfree_skb() or consume_skb(),
+ *	but kfree_skb_untraced() doesn't make any assumptions on semantics,
+ *	i.e. whether the frame is being dropped after a failure or consumed.
+ *	Consequently, it doesn't contain any instrumentation for tracing.
+ */
+void kfree_skb_untraced(struct sk_buff *skb)
+{
+	if (unlikely(!skb))
+		return;
+	if (likely(atomic_read(&skb->users) == 1))
+		smp_rmb();
+	else if (likely(!atomic_dec_and_test(&skb->users)))
+		return;
+	__kfree_skb(skb);
+}
+EXPORT_SYMBOL(kfree_skb_untraced);
 
 static void __copy_skb_header(struct sk_buff *new, const struct sk_buff *old)
 {
