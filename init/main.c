@@ -463,10 +463,24 @@ static void __init mm_init(void)
 	 */
 	page_cgroup_init_flatmem();
 	mem_init();
+
+	/*
+	 * Tempesta: reserve pages just when zones are initialized
+	 * to get continous address space of huge pages.
+	 */
+#ifdef CONFIG_SECURITY_TEMPESTA
+	tempesta_reserve_pages();
+#endif
+
 	kmem_cache_init();
 	percpu_init_late();
 	pgtable_cache_init();
 	vmalloc_init();
+
+	/* Try vmalloc() if the previous one failed. */
+#ifdef CONFIG_SECURITY_TEMPESTA
+	tempesta_reserve_vmpages();
+#endif
 }
 
 asmlinkage void __init start_kernel(void)
@@ -637,14 +651,6 @@ asmlinkage void __init start_kernel(void)
 	}
 
 	ftrace_init();
-
-	/*
-	 * Tempesta: reserve pages at so early stage to get continous
-	 * address space of physical pages.
-	 */
-#ifdef CONFIG_SECURITY_TEMPESTA
-	tempesta_reserve_pages();
-#endif
 
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();

@@ -268,12 +268,6 @@ config ZONE_DMA
 
 	  If unsure, say Y.
 
-config FORCE_MAX_ZONEORDER
-	int "MAX_ORDER (11 - 15)"  if SECURITY_TEMPESTA
-	range 11 15  if SECURITY_TEMPESTA
-	default "15" if SECURITY_TEMPESTA
-	default "11"
-
 config SMP
 	bool "Symmetric multi-processing support"
 	---help---

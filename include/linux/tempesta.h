@@ -2,7 +2,7 @@
  * Linux interface for Tempesta FW (FireWall and/or FrameWork).
  *
  * Copyright (C) 2012-2014 NatSys Lab. (info@natsys-lab.com).
- * Copyright (C) 2015 Tempesta Technologies.
+ * Copyright (C) 2015 Tempesta Technologies, Inc.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ typedef struct {
 
 typedef struct {
 	unsigned long	addr;
-	unsigned long	pages;
+	unsigned long	pages; /* number of 4KB pages */
 } TempestaMapping;
 
 /* Security hooks. */
@@ -38,6 +38,7 @@ void tempesta_unregister_ops(TempestaOps *tops);
 
 /* Memory management. */
 void tempesta_reserve_pages(void);
+void tempesta_reserve_vmpages(void);
 int tempesta_get_mapping(int node, TempestaMapping **tm);
 
 #endif /* __TEMPESTA_H__ */
