@@ -25,6 +25,7 @@
 #include <linux/personality.h>
 #include <linux/backing-dev.h>
 #include <net/flow.h>
+#include <net/sock.h>
 
 #define MAX_LSM_EVM_XATTR	2
 
@@ -1185,6 +1186,8 @@ EXPORT_SYMBOL(security_socket_getpeersec_dgram);
 
 int security_sk_alloc(struct sock *sk, int family, gfp_t priority)
 {
+	sk->sk_security = NULL;
+
 	return security_ops->sk_alloc_security(sk, family, priority);
 }
 
@@ -1224,10 +1227,10 @@ int security_inet_conn_request(struct sock *sk,
 }
 EXPORT_SYMBOL(security_inet_conn_request);
 
-void security_inet_csk_clone(struct sock *newsk,
+int security_inet_csk_clone(struct sock *newsk,
 			const struct request_sock *req)
 {
-	security_ops->inet_csk_clone(newsk, req);
+	return security_ops->inet_csk_clone(newsk, req);
 }
 
 void security_inet_conn_established(struct sock *sk,

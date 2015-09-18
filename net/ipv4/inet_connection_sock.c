@@ -695,7 +695,17 @@ struct sock *inet_csk_clone_lock(const struct sock *sk,
 		/* Deinitialize accept_queue to trap illegal accesses. */
 		memset(&newicsk->icsk_accept_queue, 0, sizeof(newicsk->icsk_accept_queue));
 
-		security_inet_csk_clone(newsk, req);
+		/*
+		 * Tempesta: need this check when we know src port of the new
+		 * socket request and the new socket is just created: there is
+		 * still not so much work done, but we already can set
+		 * sk_security for it.
+		 */
+		if (security_inet_csk_clone(newsk, req)) {
+			bh_unlock_sock(newsk);
+			sk_free(newsk);
+			return NULL;
+		}
 	}
 	return newsk;
 }

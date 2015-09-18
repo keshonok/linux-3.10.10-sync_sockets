@@ -60,6 +60,43 @@ tempesta_unregister_ops(TempestaOps *tops)
 EXPORT_SYMBOL(tempesta_unregister_ops);
 
 static int
+tempesta_sk_new(struct sock *newsk, const struct request_sock *req)
+{
+	int r;
+
+	TempestaOps *tops;
+
+	WARN_ON(newsk->sk_security);
+
+	rcu_read_lock();
+
+	tops = rcu_dereference(tempesta_ops);
+	if (likely(tops))
+		r = tops->sk_alloc(newsk);
+
+	rcu_read_unlock();
+
+	return 0;
+}
+
+static void
+tempesta_sk_free(struct sock *sk)
+{
+	TempestaOps *tops;
+
+	if (!sk->sk_security)
+		return;
+
+	rcu_read_lock();
+
+	tops = rcu_dereference(tempesta_ops);
+	if (likely(tops))
+		tops->sk_free(sk);
+
+	rcu_read_unlock();
+}
+
+static int
 tempesta_sock_tcp_rcv(struct sock *sk, struct sk_buff *skb)
 {
 	int r = 0;
@@ -78,7 +115,15 @@ tempesta_sock_tcp_rcv(struct sock *sk, struct sk_buff *skb)
 	return r;
 }
 
+/*
+ * socket_post_create is relatively late phase when a lot of work already
+ * done and sk_alloc_security looks more attractive. However, the last one
+ * is called by sk_alloc() before inet_create() before initializes
+ * inet_sock->inet_sport, so we can't use it.
+ */
 static struct security_operations tempesta_sec_ops __read_mostly = {
+	.inet_csk_clone		= tempesta_sk_new,
+	.sk_free_security	= tempesta_sk_free,
 	.socket_sock_rcv_skb	= tempesta_sock_tcp_rcv,
 };
 

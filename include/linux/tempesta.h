@@ -24,6 +24,8 @@
 #include <net/sock.h>
 
 typedef struct {
+	int (*sk_alloc)(struct sock *sk);
+	void (*sk_free)(struct sock *sk);
 	int (*sock_tcp_rcv)(struct sock *sk, struct sk_buff *skb);
 } TempestaOps;
 
