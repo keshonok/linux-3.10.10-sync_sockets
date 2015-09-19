@@ -1227,10 +1227,10 @@ int security_inet_conn_request(struct sock *sk,
 }
 EXPORT_SYMBOL(security_inet_conn_request);
 
-int security_inet_csk_clone(struct sock *newsk,
+void security_inet_csk_clone(struct sock *newsk,
 			const struct request_sock *req)
 {
-	return security_ops->inet_csk_clone(newsk, req);
+	security_ops->inet_csk_clone(newsk, req);
 }
 
 void security_inet_conn_established(struct sock *sk,

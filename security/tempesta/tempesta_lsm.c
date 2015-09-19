@@ -18,11 +18,12 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include <linux/ipv6.h>
 #include <linux/security.h>
 #include <linux/spinlock.h>
 #include <linux/tempesta.h>
 
-static TempestaOps __rcu *tempesta_ops;
+static TempestaOps __rcu *tempesta_ops = NULL;
 static DEFINE_SPINLOCK(tops_lock);
 
 void
@@ -59,10 +60,10 @@ tempesta_unregister_ops(TempestaOps *tops)
 }
 EXPORT_SYMBOL(tempesta_unregister_ops);
 
-static int
-tempesta_sk_new(struct sock *newsk, const struct request_sock *req)
+int
+tempesta_new_clntsk(struct sock *newsk)
 {
-	int r;
+	int r = 0;
 
 	TempestaOps *tops;
 
@@ -76,8 +77,9 @@ tempesta_sk_new(struct sock *newsk, const struct request_sock *req)
 
 	rcu_read_unlock();
 
-	return 0;
+	return r;
 }
+EXPORT_SYMBOL(tempesta_new_clntsk);
 
 static void
 tempesta_sk_free(struct sock *sk)
@@ -115,14 +117,7 @@ tempesta_sock_tcp_rcv(struct sock *sk, struct sk_buff *skb)
 	return r;
 }
 
-/*
- * socket_post_create is relatively late phase when a lot of work already
- * done and sk_alloc_security looks more attractive. However, the last one
- * is called by sk_alloc() before inet_create() before initializes
- * inet_sock->inet_sport, so we can't use it.
- */
 static struct security_operations tempesta_sec_ops __read_mostly = {
-	.inet_csk_clone		= tempesta_sk_new,
 	.sk_free_security	= tempesta_sk_free,
 	.socket_sock_rcv_skb	= tempesta_sock_tcp_rcv,
 };

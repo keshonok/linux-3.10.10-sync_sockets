@@ -35,6 +35,7 @@ typedef struct {
 } TempestaMapping;
 
 /* Security hooks. */
+int tempesta_new_clntsk(struct sock *newsk);
 void tempesta_register_ops(TempestaOps *tops);
 void tempesta_unregister_ops(TempestaOps *tops);
 

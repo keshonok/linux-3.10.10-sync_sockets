@@ -62,6 +62,7 @@
 #include <linux/init.h>
 #include <linux/times.h>
 #include <linux/slab.h>
+#include <linux/tempesta.h>
 
 #include <net/net_namespace.h>
 #include <net/icmp.h>
@@ -1716,6 +1717,14 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 	}
 #endif
 
+#ifdef CONFIG_SECURITY_TEMPESTA
+	/*
+	 * We need already initialized socket addresses,
+	 * so there is no appropriate security hook.
+	 */
+	if (tempesta_new_clntsk(newsk))
+		goto put_and_exit;
+#endif
 	if (__inet_inherit_port(sk, newsk) < 0)
 		goto put_and_exit;
 	__inet_hash_nolisten(newsk, NULL);

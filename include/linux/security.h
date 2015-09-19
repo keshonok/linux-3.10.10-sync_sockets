@@ -1630,7 +1630,7 @@ struct security_operations {
 	void (*sock_graft) (struct sock *sk, struct socket *parent);
 	int (*inet_conn_request) (struct sock *sk, struct sk_buff *skb,
 				  struct request_sock *req);
-	int (*inet_csk_clone) (struct sock *newsk, const struct request_sock *req);
+	void (*inet_csk_clone) (struct sock *newsk, const struct request_sock *req);
 	void (*inet_conn_established) (struct sock *sk, struct sk_buff *skb);
 	int (*secmark_relabel_packet) (u32 secid);
 	void (*secmark_refcount_inc) (void);
@@ -2581,7 +2581,7 @@ void security_req_classify_flow(const struct request_sock *req, struct flowi *fl
 void security_sock_graft(struct sock*sk, struct socket *parent);
 int security_inet_conn_request(struct sock *sk,
 			struct sk_buff *skb, struct request_sock *req);
-int security_inet_csk_clone(struct sock *newsk,
+void security_inet_csk_clone(struct sock *newsk,
 			const struct request_sock *req);
 void security_inet_conn_established(struct sock *sk,
 			struct sk_buff *skb);
@@ -2737,10 +2737,9 @@ static inline int security_inet_conn_request(struct sock *sk,
 	return 0;
 }
 
-static inline int security_inet_csk_clone(struct sock *newsk,
+static inline void security_inet_csk_clone(struct sock *newsk,
 			const struct request_sock *req)
 {
-	return 0;
 }
 
 static inline void security_inet_conn_established(struct sock *sk,
